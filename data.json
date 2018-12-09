@@ -1,0 +1,13 @@
+{
+  "cols": [
+    {"id":"","label":"Topping","pattern":"","type":"string"},
+    {"id":"","label":"Slices","pattern":"","type":"number"}
+  ],
+  "rows": [
+    {"c":[{"v":"Cats","f":null},{"v":3,"f":null}]},
+    {"c":[{"v":"Dogs","f":null},{"v":1,"f":null}]},
+    {"c":[{"v":"Birds","f":null},{"v":1,"f":null}]},
+    {"c":[{"v":"Fishes","f":null},{"v":1,"f":null}]},
+    {"c":[{"v":"Insects","f":null},{"v":2,"f":null}]}
+  ]
+}

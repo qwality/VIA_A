@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Google Chart VIA_A</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+    <div id="chart_div"></div>
+    <form
+            style="display: grid; grid-template-columns: auto"
+            id="f"
+            onsubmit="return onsubmit(this)">
+    </form>
+    <div id="chart_div2"></div>
+    <script>
+        function loadJSON(callback) {
+
+            var xobj = new XMLHttpRequest();
+            xobj.overrideMimeType("application/json");
+            xobj.open('GET', 'data.json', false); // Replace 'my_data' with the path to your file
+            xobj.onreadystatechange = function () {
+                if (xobj.readyState == 4 && xobj.status == "200") {
+                    // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+                    callback(xobj.responseText);
+                }
+            };
+            xobj.send(null);
+        }
+
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(init);
+
+        function init() {
+            loadJSON(function(response) {
+                // Parse JSON string into object
+                actual_JSON = JSON.parse(response);
+                // console.log(actual_JSON);
+
+                var data = new google.visualization.DataTable(actual_JSON);
+                var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                chart.draw(data, {width: 400, height: 240});
+                ar = [...document.getElementsByTagName('g')[0].children].slice(1)
+                for(i in ar){
+                    label = document.createElement('label');
+                    checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = ar[i].getAttribute('column-id');
+                    checkbox.id = ar[i].getAttribute('column-id');
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(checkbox.name));
+                    // console.log(checkbox);
+                    document.getElementById('f').appendChild(label);
+                }
+                // console.log(ar)
+            });
+            button = document.createElement('input');
+            button.type = 'button';
+            button.value = 'button';
+            button.style.width = '100px';
+            button.onclick = onsubmit;
+            button.id = 'button';
+            document.getElementById('f').appendChild(button)
+        }
+
+        function onsubmit(el){
+            checkboxes = [...document.forms['f']].slice(0,-1);
+            new_json = JSON.parse(JSON.stringify(actual_JSON));
+            console.log(new_json);
+            for(i in checkboxes){
+                if(!checkboxes[i].checked){
+                    console.log('removing:' + checkboxes[i].name);
+                    new_json['rows'][i]['c'][1]['v'] = 0;
+                    // actual_JSON['rows'][0]['c'][0]['v']
+                    // actual_JSON['rows'][0]['c'][1]['v']
+                }
+                else console.log('including: ' + checkboxes[i].name);
+            }
+            console.log(new_json);
+
+            var data2 = new google.visualization.DataTable(new_json);
+            var chart2 = new google.visualization.PieChart(document.getElementById('chart_div2'));
+            chart2.draw(data2, {width: 400, height: 240});
+
+            return false;
+        }
+
+
+        // init();
+
+    </script>
+</body>
+</html>
